@@ -29,8 +29,6 @@ PASS_WARN_AGE=7 # Change this to the desired number of days
 # Update /etc/login.defs with the new setting
 sed -i "s/^PASS_WARN_AGE.*/PASS_WARN_AGE    $PASS_WARN_AGE/" /etc/login.defs
 
-
-
 # Update PAM to enforce password policies
 #echo "Updating PAM to enforce password policies..."
 #echo "password requisite pam_pwquality.so retry=3 minlen=12 difok=3" >> /etc/pam.d/common-password
@@ -133,7 +131,7 @@ sed -i 's/^#PermitEmptyPasswords.*/PermitEmptyPasswords no/' /etc/ssh/sshd_confi
 
 # Delete all .mp3, .mp4, and .ogg files
 echo "Deleting all .mp3, .mp4, and .ogg files..."
-find / -type f \( -name "*.mp3" -o -name "*.mp4" -o -name "*.ogg" \) -delete
+find / -type f \( -name "*.mp3" -o -name "*.mp4" -o -name "*.ogg" -o\) -delete
 
 # Example for closing an open port, replace $port with actual port number
 #PORT_TO_CLOSE=1234  # Replace with actual port
@@ -168,7 +166,9 @@ rkhunter --update
 rkhunter --check
 
 # Blacklisted Programs
-for program in nmap zenmap apache2 nginx lighttpd wireshark tcpdump netcat-traditional nikto ophcrack; do
+for program in nmap zenmap lighttpd wireshark tcpdump netcat-traditional nikto ophcrack telnet rlogind rshd rcmd rexecd rbootd rquotad rstatd rusersd rwalld rexd fingerd tftpd telnet snmp netcat nc john nmap vuze frostwire kismet freeciv minetest minetest-server medusa hydra truecrack ophcrack nikto cryptcat nc netcat tightvncserver x11vnc nfs xinetd
+
+; do
     apt-get remove --purge -y $program
 done
 
