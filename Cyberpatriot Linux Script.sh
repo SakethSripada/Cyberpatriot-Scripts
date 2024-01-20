@@ -4,7 +4,7 @@
 
 #ATTENTION: BEFORE RUNNING, GO TO LINE 129 AND REPLACE PORT 1234 with THE ACTUAL NUMBER OF THE PORT THAT YOU WANT TO DISABLE. THEN UNCOMMENT THE LINES FOR IT TO EXECUTE.
 
-#ATTENTION: SOME ITEMS ARE COMMENTED DUE TO POTENTIAL IRREVERSIBILITY. RUN WITH CAUTION
+#ATTENTION: SOME ITEMS MAY POTENTIALLY BE IRREVERSIBLE. PLEASE GO THROUGH THE SCRIPT AND COMMENT OPERATIONS YOU DO NOT WISH TO EXECUTE
 
 #ENTER THE FOLLOWING INTO THE TERMINAL:
   #chmod +x /path/to/your-script.sh
@@ -37,20 +37,16 @@ sed -i 's/^PASS_MAX_DAYS.*/PASS_MAX_DAYS   90/' /etc/login.defs
 
 # Set the desired warning age for password expiration
 PASS_WARN_AGE=7 # Change this to the desired number of days
-
-# Update /etc/login.defs with the new setting
 echo "Setting pass warn age"
 sed -i "s/^PASS_WARN_AGE.*/PASS_WARN_AGE    $PASS_WARN_AGE/" /etc/login.defs
 
 # Update PAM to enforce password policies
-#echo "Updating PAM to enforce password policies..."
-#echo "password requisite pam_pwquality.so retry=3 minlen=12 difok=3" >> /etc/pam.d/common-password
-
-# Install and configure additional password strength checks (if needed)
+echo "Updating PAM to enforce password policies..."
+echo "password requisite pam_pwquality.so retry=3 minlen=12 difok=3" >> /etc/pam.d/common-password
 
 # Implement Account Lockout Policy in PAM
-#echo "Implementing lockout Policy in PAM"
-#echo "auth required pam_tally2.so onerr=fail deny=5 unlock_time=1800" >> /etc/pam.d/common-auth
+echo "Implementing lockout Policy in PAM"
+echo "auth required pam_tally2.so onerr=fail deny=5 unlock_time=1800" >> /etc/pam.d/common-auth
 
 # Firewall Configuration
 echo "Enabling UFW Firewall..."
@@ -151,7 +147,6 @@ sed -i 's/^#HostbasedAuthentication.*/HostbasedAuthentication no/' /etc/ssh/sshd
 sed -i 's/^#PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
 sed -i 's/^#PermitEmptyPasswords.*/PermitEmptyPasswords no/' /etc/ssh/sshd_config
 
-
 # Delete all .mp3, .mp4, and .ogg files
 echo "Deleting all .mp3, .mp4, and .ogg files..."
 find / -type f \( -name "*.mp3" -o -name "*.mp4" -o -name "*.ogg" -o\) -delete
@@ -176,7 +171,6 @@ auditctl -e
 echo "Installing and configuring lynis"
 apt-get install lynis -y
 echo "0 2 * * * root /usr/bin/lynis audit system" >> /etc/crontab
-
 
 # Disable USB Storage
 #echo "Disabling USB Storage"
