@@ -7,7 +7,7 @@
 #ATTENTION: SOME ITEMS MAY POTENTIALLY BE IRREVERSIBLE. PLEASE GO THROUGH THE SCRIPT AND COMMENT OPERATIONS YOU DO NOT WISH TO EXECUTE
 
 #ENTER THE FOLLOWING INTO THE TERMINAL:
-  #chmod +x /path/to/your-script.sh
+  #chmod +x /path/to/this-script.sh (Replace with actual path of this script)
 
 #Array to store error messages
 declare -a error_msgs
