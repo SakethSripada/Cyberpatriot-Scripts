@@ -15,7 +15,7 @@ declare -a error_msgs
 #Function to add error message
 add_error(){
   local line = $1
-  lcoal exit_code = $2
+  local exit_code = $2
   error_msgs+=("Error on Line $line: Command exited with status $exit_code.")
 }
 
