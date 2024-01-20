@@ -27,6 +27,7 @@ sed -i 's/^PASS_MAX_DAYS.*/PASS_MAX_DAYS   90/' /etc/login.defs
 PASS_WARN_AGE=7 # Change this to the desired number of days
 
 # Update /etc/login.defs with the new setting
+echo "Setting pass warn age"
 sed -i "s/^PASS_WARN_AGE.*/PASS_WARN_AGE    $PASS_WARN_AGE/" /etc/login.defs
 
 # Update PAM to enforce password policies
@@ -36,6 +37,7 @@ sed -i "s/^PASS_WARN_AGE.*/PASS_WARN_AGE    $PASS_WARN_AGE/" /etc/login.defs
 # Install and configure additional password strength checks (if needed)
 
 # Implement Account Lockout Policy in PAM
+#echo "Implementing lockout Policy in PAM"
 #echo "auth required pam_tally2.so onerr=fail deny=5 unlock_time=1800" >> /etc/pam.d/common-auth
 
 # Firewall Configuration
@@ -48,25 +50,32 @@ apt-get update && apt-get upgrade -y
 apt-get google-chrome-stable -y
 
 # System Daily Update
+echo "Enabling system daily update"
 echo "0 3 * * * root apt-get update && apt-get upgrade -y" >> /etc/crontab
 
 # Enable Syn Cookies
+echo "Enabling Syn Cookies"
 sysctl -w net.ipv4.tcp_syncookies=1
 
 # Ignore ICMP Echo Requests
+echo "Ignoring ICMP Echo Requests"
 sysctl -w net.ipv4.icmp_echo_ignore_all=1
 
 # Disable Root Login
+echo "Disabling root login"
 sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
 
 # Disable IP Forwarding
+echo "Disabling IP Forwarding"
 sysctl -w net.ipv4.ip_forward=0
 
 # Configure LightDM (if using LightDM)
+echo "Configuring LightDM (disabling guest user)"
 echo "allow-guest=false" >> /etc/lightdm/lightdm.conf
 systemctl restart lightdm
 
 # Kernel and Network Security Settings
+echo "Turning on Execshield and randomize_va_space"
 cat << EOF >> /etc/sysctl.conf
 # Turn on ExecShield
 kernel.exec-shield=1
@@ -116,9 +125,11 @@ EOF
 sysctl -p
 
 # Prevent IP Spoofing
+echo "Preventing IP Spoofing"
 echo "nospoof on" >> /etc/host.conf
 
 # Configure OpenSSH Server
+echo "Configuring OpenSSH Server"
 sed -i 's/^#Protocol 2/Protocol 2/' /etc/ssh/sshd_config
 sed -i 's/^#LogLevel.*/LogLevel VERBOSE/' /etc/ssh/sshd_config
 sed -i 's/^#X11Forwarding yes/X11Forwarding no/' /etc/ssh/sshd_config
@@ -138,34 +149,41 @@ find / -type f \( -name "*.mp3" -o -name "*.mp4" -o -name "*.ogg" -o\) -delete
 #lsof -i :$PORT_TO_CLOSE | awk 'NR!=1 {print $2}' | xargs kill
 
 # Check for users with UID 0 other than root
+echo "Checking for users with UID 0 other than root"
 awk -F: '$3 == 0 && $1 != "root" {print $1}' /etc/passwd
 
 # Remove Samba-related packages
-apt-get remove --purge -y .*samba.* .*smb.*
+#apt-get remove --purge -y .*samba.* .*smb.*
 
 # Install and configure auditd for logging system events
+echo "Installing and configuring auditd"
 apt-get install auditd -y
 auditctl -e 
 
 # Install and schedule regular runs of Lynis for security auditing
+echo "Installing and configuring lynis"
 apt-get install lynis -y
 echo "0 2 * * * root /usr/bin/lynis audit system" >> /etc/crontab
 
 
 # Disable USB Storage
+#echo "Disabling USB Storage"
 #echo 'install usb-storage /bin/true' >> /etc/modprobe.d/disable-usb-storage.conf
 
 # Disable Firewire/Thunderbolt
+#echo "Disabling Firewire/Thunderbolt"
 #echo "blacklist firewire-core" >> /etc/modprobe.d/firewire.conf
 #echo "blacklist thunderbolt" >> /etc/modprobe.d/thunderbolt.conf
 
 # Install and Run Rootkit Checkers
+echo "Installing and run rkhunter rootkit checker"
 apt-get install chkrootkit rkhunter -y
 chkrootkit
 rkhunter --update
 rkhunter --check
 
 # Blacklisted Programs
+echo "Removing blacklisted programs"
 for program in nmap zenmap lighttpd wireshark tcpdump netcat-traditional nikto ophcrack telnet rlogind rshd rcmd rexecd rbootd rquotad rstatd rusersd rwalld rexd fingerd tftpd telnet snmp netcat nc john nmap vuze frostwire kismet freeciv minetest minetest-server medusa hydra truecrack ophcrack nikto cryptcat nc netcat tightvncserver x11vnc nfs xinetd
 
 ; do
