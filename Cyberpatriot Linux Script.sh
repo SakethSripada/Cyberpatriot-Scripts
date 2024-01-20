@@ -23,6 +23,14 @@ sed -i 's/^PASS_MIN_LEN.*/PASS_MIN_LEN    12/' /etc/login.defs
 echo "Setting maximum password age..."
 sed -i 's/^PASS_MAX_DAYS.*/PASS_MAX_DAYS   90/' /etc/login.defs
 
+# Set the desired warning age for password expiration
+PASS_WARN_AGE=7 # Change this to the desired number of days
+
+# Update /etc/login.defs with the new setting
+sed -i "s/^PASS_WARN_AGE.*/PASS_WARN_AGE    $PASS_WARN_AGE/" /etc/login.defs
+
+
+
 # Update PAM to enforce password policies
 #echo "Updating PAM to enforce password policies..."
 #echo "password requisite pam_pwquality.so retry=3 minlen=12 difok=3" >> /etc/pam.d/common-password
