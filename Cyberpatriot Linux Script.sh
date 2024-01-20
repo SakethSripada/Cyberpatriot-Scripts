@@ -9,6 +9,18 @@
 #ENTER THE FOLLOWING INTO THE TERMINAL:
   #chmod +x /path/to/your-script.sh
 
+#Array to store error messages
+declare -a error_msgs
+
+#Function to add error message
+add_error(){
+  local line = $1
+  lcoal exit_code = $2
+  error_msgs+=("Error on Line $line: Command exited with status $exit_code.")
+}
+
+#Trap ERR to call add_error function
+trap "add_error $LINEN0 $?" ERR
 
 # Ensure the script is run as root
 if [ "$EUID" -ne 0 ]
@@ -190,4 +202,11 @@ for program in nmap zenmap lighttpd wireshark tcpdump netcat-traditional nikto o
     apt-get remove --purge -y $program
 done
 
-echo "Security configurations applied."
+if [ ${#error_msgs[@]} -ne 0 ]; then
+    echo "The following errors occurred:"
+    for msg in "${error_msgs[@]}"; do
+        echo "- $msg"
+    done
+else
+    echo "All operations completed successfully."
+fi
