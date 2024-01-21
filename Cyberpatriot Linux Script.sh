@@ -132,10 +132,6 @@ EOF
 # Apply sysctl settings
 sysctl -p
 
-# Prevent IP Spoofing
-echo "Preventing IP Spoofing"
-echo "nospoof on" >> /etc/host.conf
-
 # Configure OpenSSH Server
 echo "Configuring OpenSSH Server"
 sed -i 's/^#Protocol 2/Protocol 2/' /etc/ssh/sshd_config
